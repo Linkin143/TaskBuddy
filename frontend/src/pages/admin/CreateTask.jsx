@@ -95,7 +95,7 @@ const CreateTask = () => {
 
       navigate("/user/tasks");
 
-      // console.log(response.data)
+      
     } catch (error) {
       console.log("Error creating task: ", error)
       toast.error("Error creating task!")
@@ -168,7 +168,7 @@ const CreateTask = () => {
     createTask()
   }
 
-  // get task info by id
+
   const getTaskDetailsById = async () => {
     try {
       const response = await axiosInstance.get(`/tasks/${taskId}`)
@@ -219,10 +219,8 @@ const CreateTask = () => {
     return () => {}
   }, [taskId])
 
-  // Helper styles for inputs - Updated font size to text-sm and simplified classes
   const inputContainerStyle = "relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 transition-all duration-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 focus-within:border-indigo-400 focus-within:shadow-[0_4px_12px_rgba(99,102,241,0.1)]"
   
-  // Standardized Label Style - Semibold for hierarchy, text-sm for classic dashboard feel
   const labelStyle = "block text-sm font-semibold text-gray-700 mb-1.5 ml-1"
 
   return (
@@ -271,7 +269,7 @@ const CreateTask = () => {
                     <input
                       type="text"
                       placeholder="e.g. Redesign Dashboard UI"
-                      // Standardized input font: text-sm, text-gray-900 (darker), font-normal
+                      
                       className="w-full bg-transparent border-none focus:outline-none text-gray-900 placeholder-gray-400 text-sm"
                       value={taskData.title}
                       onChange={(e) => handleValueChange("title", e.target.value)}
@@ -332,7 +330,7 @@ const CreateTask = () => {
 
                 {/* Assign To Section */}
                 <div>
-                   <label className={labelStyle}>Assign To Team Members</label>
+                   <label className={labelStyle}>Assigned To You</label>
                    <div className="p-1">
                       <SelectedUsers
                         selectedUser={taskData.assignedTo}
@@ -366,7 +364,7 @@ const CreateTask = () => {
                 {/* Submit Button */}
                 <div className="pt-4">
                   <button
-                    // Updated Button Font: text-base, font-semibold (classic button style)
+                    
                     className="w-full py-3.5 hover:cursor-pointer bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-500 text-white text-base font-semibold tracking-wide rounded-xl shadow-[0_10px_20px_-5px_rgba(99,102,241,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.5)] transform hover:-translate-y-1 transition-all duration-300"
                     onClick={handleSubmit}
                     type="button"

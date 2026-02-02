@@ -28,7 +28,6 @@ mongoose
 
 const app = express()
 
-// Middleware to handle cors
 app.use(
   cors({
     origin: process.env.FRONT_END_URL || "http://localhost:5174",
@@ -37,7 +36,6 @@ app.use(
   })
 )
 
-// Middleware to handle JSON object in req body
 app.use(express.json())
 
 app.use(cookieParser())
@@ -52,7 +50,6 @@ app.use("/api/users", userRoutes)
 app.use("/api/tasks", taskRoutes)
 app.use("/api/reports", reportRoutes)
 
-// serve static files from "uploads" folder
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
 app.use((err, req, res, next) => {

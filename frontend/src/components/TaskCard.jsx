@@ -3,7 +3,6 @@ import { FaFileLines } from "react-icons/fa6"
 import { MdAccessTime, MdCalendarToday } from "react-icons/md"
 import Progress from "./Progress"
 
-// --- 3D Avatar Component (Fallback) ---
 const ThreeDAvatar = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
     <defs>
@@ -26,17 +25,19 @@ const TaskCard = ({
   description,
   priority,
   status,
-  progress,
   createdAt,
   dueDate,
-  assignedTo = [], // Default to empty array
+  assignedTo = [],
   attachmentCount,
-  completedTodoCount,
-  todoChecklist,
+  todoChecklist = [],
   onClick,
 }) => {
   
-  // Helper for 3D Badge Styles
+  // FIX: Calculate actual completed count and progress percentage
+  const totalTodos = todoChecklist?.length || 0;
+  const activeCompletedCount = todoChecklist?.filter(todo => todo.completed).length || 0;
+  const calculatedProgress = totalTodos > 0 ? (activeCompletedCount / totalTodos) * 100 : 0;
+
   const getStatusStyle = () => {
     switch (status) {
       case "Pending":
@@ -63,7 +64,6 @@ const TaskCard = ({
     }
   }
 
-  // Helper for Border Color based on status
   const getBorderColor = () => {
     if (status === "In Progress") return "bg-sky-500"
     if (status === "Completed") return "bg-emerald-500"
@@ -72,19 +72,17 @@ const TaskCard = ({
 
   return (
     <div
-      className="group relative bg-white rounded-2xl p-5 shadow-[0_10px_20px_-10px_rgba(0,0,0,0.05)] border border-indigo-50 cursor-pointer hover:shadow-[0_20px_40px_-15px_rgba(99,102,241,0.2)] hover:-translate-y-1 transition-all duration-300 ease-out overflow-hidden"
+      className="group relative bg-white rounded-2xl p-5 shadow-[0_10px_20px_-10px_rgba(0,0,0,0.05)] border border-indigo-50 cursor-pointer hover:shadow-[0_20px_40px_-15px_rgba(99,102,241,0.2)] hover:-translate-y-1 transition-all duration-300 ease-out overflow-hidden font-sans"
       onClick={onClick}
     >
-      {/* Decorative colored line on the left with glow */}
       <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${getBorderColor()} group-hover:w-2 transition-all duration-300`}></div>
       <div className={`absolute left-0 top-0 bottom-0 w-1 ${getBorderColor()} blur-sm opacity-50`}></div>
 
-      {/* Header: Status & Priority */}
+      {/* Header */}
       <div className="flex items-center justify-between mb-4 pl-3">
         <div className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${getStatusStyle()}`}>
           {status}
         </div>
-
         <div className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${getPriorityStyle()}`}>
           {priority}
         </div>
@@ -95,30 +93,26 @@ const TaskCard = ({
         <h4 className="text-lg font-bold text-gray-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">
           {title}
         </h4>
-        
         <p className="text-sm text-gray-500 mt-2 line-clamp-2 leading-relaxed font-medium">
           {description}
         </p>
       </div>
 
-      {/* Progress Section */}
+      {/* Progress Section: FIXED logic */}
       <div className="pl-3 mb-5">
         <div className="flex justify-between items-center mb-1.5">
-          <span className="text-xs font-bold text-gray-400">Progress</span>
+          <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Progress</span>
           <span className="text-xs font-bold text-indigo-600">
-             {completedTodoCount} / {todoChecklist?.length || 0}
+             {activeCompletedCount} / {totalTodos}
           </span>
         </div>
-        <Progress progress={progress} status={status} />
+        <Progress progress={calculatedProgress} status={status} />
       </div>
 
-      {/* Divider */}
       <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-4"></div>
 
-      {/* Footer: Dates & Users */}
+      {/* Footer */}
       <div className="pl-3 grid grid-cols-1 gap-4">
-        
-        {/* Dates */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
              <MdCalendarToday className="text-indigo-400 text-xs" />
@@ -137,10 +131,7 @@ const TaskCard = ({
           </div>
         </div>
 
-        {/* Users & Attachments */}
         <div className="flex items-center justify-between pt-1">
-          
-          {/* 3D Avatar Stack Logic */}
           <div className="flex -space-x-3 items-center">
             {assignedTo?.slice(0, 3).map((user, index) => (
               <div 
@@ -161,8 +152,6 @@ const TaskCard = ({
                 )}
               </div>
             ))}
-            
-            {/* Overflow Counter */}
             {assignedTo?.length > 3 && (
               <div className="w-9 h-9 rounded-full border-2 border-white bg-indigo-50 flex items-center justify-center relative z-0">
                 <span className="text-xs font-bold text-indigo-600">+{assignedTo.length - 3}</span>

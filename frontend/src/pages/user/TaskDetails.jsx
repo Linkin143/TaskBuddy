@@ -28,7 +28,7 @@ const TaskDetails = () => {
   const { id } = useParams()
   const [task, setTask] = useState(null)
 
-  // 3D/Gradient Status Styles
+  
   const getStatusStyle = (status) => {
     switch (status) {
       case "In Progress":
@@ -69,7 +69,7 @@ const TaskDetails = () => {
           todoChecklist[index].completed = !todoChecklist[index].completed
         }
       } catch (error) {
-        // Revert on error
+        
         todoChecklist[index].completed = !todoChecklist[index].completed
       }
     }
@@ -237,8 +237,6 @@ const TaskDetails = () => {
     </DashboardLayout>
   )
 }
-
-// --- Sub-Components ---
 
 const InfoBox = ({ icon, label, value, color }) => {
   return (

@@ -23,6 +23,10 @@ export const getTaskInsights = async (req, res, next) => {
             });
         }
 
+    const totalTasks = tasks.length;
+    const completedTasks = tasks.filter(t => t.status === "Completed").length;
+    const efficiencyScore = Math.round((completedTasks / totalTasks) * 100);
+
         // 2. Pre-process data
         const taskSummary = tasks.map((t) => {
             const checklistTotal = t.todoChecklist?.length || 0;
@@ -39,6 +43,7 @@ export const getTaskInsights = async (req, res, next) => {
         // 3. Construct the Prompt
         const systemPrompt = `
              You are the "Task Buddy" AI Project Manager for Prince. 
+             Current Efficiency Score: ${efficiencyScore}%
              Current Date: ${new Date().toDateString()}
 
              USER TASK DATA:

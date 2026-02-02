@@ -16,7 +16,7 @@ const MyTask = () => {
     { label: "Completed", count: 0 },
   ])
   const [filterStatus, setFilterStatus] = useState("All")
-  const [isDownloading, setIsDownloading] = useState(false) // Added loading state for download
+  const [isDownloading, setIsDownloading] = useState(false) 
 
   const navigate = useNavigate()
 
@@ -45,7 +45,7 @@ const MyTask = () => {
     }
   }
 
-  // --- REPORT DOWNLOAD LOGIC ---
+  
   const handleDownloadReport = async () => {
     setIsDownloading(true)
     try {
@@ -141,12 +141,12 @@ const MyTask = () => {
                 description={item.description}
                 priority={item.priority}
                 status={item.status}
-                // Pass the whole user object array so TaskCard 3D avatars work correctly
+                
                 assignedTo={item.assignedTo || []}
                 createdAt={item.createdAt}
                 dueDate={item.dueDate}
                 attachmentCount={item.attachments?.length || 0}
-                // Pass full checklist for progress calculation
+                
                 todoChecklist={item.todoChecklist || []}
                 completedTodoCount={item.completedTodoCount || 0}
                 onClick={() => handleClick(item._id)}
