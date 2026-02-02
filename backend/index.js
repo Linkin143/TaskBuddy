@@ -47,7 +47,7 @@ app.listen(3000, () => {
 })
 
 app.use("/api/auth", authRoutes)
-app.use("/api/getinsight", aiRoutes)
+app.use("/api/user", aiRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/tasks", taskRoutes)
 app.use("/api/reports", reportRoutes)
