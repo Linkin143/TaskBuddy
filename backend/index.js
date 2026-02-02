@@ -6,6 +6,7 @@ import mongoose from "mongoose"
 import path from "path"
 
 import { fileURLToPath } from "url"
+import aiRoutes from "./routes/ai.routes.js"
 import authRoutes from "./routes/auth.route.js"
 import reportRoutes from "./routes/report.route.js"
 import taskRoutes from "./routes/task.route.js"
@@ -46,6 +47,7 @@ app.listen(3000, () => {
 })
 
 app.use("/api/auth", authRoutes)
+app.use("/api/getinsight", aiRoutes)
 app.use("/api/users", userRoutes)
 app.use("/api/tasks", taskRoutes)
 app.use("/api/reports", reportRoutes)
