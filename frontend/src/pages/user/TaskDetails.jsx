@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom"
 import DashboardLayout from "../../components/DashboardLayout"
 import axiosInstance from "../../utils/axioInstance"
 
-// --- 3D Avatar Component ---
+
 const ThreeDAvatar = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
     <defs>
@@ -35,7 +35,7 @@ const TaskDetails = () => {
         return "bg-gradient-to-r from-sky-400 to-blue-500 text-white shadow-[0_4px_10px_-2px_rgba(56,189,248,0.4)]"
       case "Completed":
         return "bg-gradient-to-r from-emerald-400 to-teal-500 text-white shadow-[0_4px_10px_-2px_rgba(16,185,129,0.4)]"
-      default: // Pending
+      default: 
         return "bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-[0_4px_10px_-2px_rgba(251,191,36,0.4)]"
     }
   }
@@ -116,7 +116,7 @@ const TaskDetails = () => {
                     </h2>
                   </div>
                   
-                  {/* Priority Badge (3D Look) */}
+                  
                   <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-xl flex flex-col items-center min-w-[100px]">
                       <span className="text-indigo-100 text-[10px] font-bold uppercase tracking-wider mb-1">Priority</span>
                       <span className={`text-lg font-black ${
@@ -141,7 +141,7 @@ const TaskDetails = () => {
                    </div>
                 </div>
 
-                {/* Grid Info Section */}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                    
                    {/* Due Date Card */}
@@ -264,7 +264,7 @@ const TodoCheckList = ({ text, isChecked, onChange }) => {
         }
       `}
     >
-      {/* Custom 3D Checkbox */}
+      
       <div className={`
          w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-300 border-2
          ${isChecked 
