@@ -33,7 +33,7 @@ const TaskCard = ({
   onClick,
 }) => {
   
-  // FIX: Calculate actual completed count and progress percentage
+  
   const totalTodos = todoChecklist?.length || 0;
   const activeCompletedCount = todoChecklist?.filter(todo => todo.completed).length || 0;
   const calculatedProgress = totalTodos > 0 ? (activeCompletedCount / totalTodos) * 100 : 0;
@@ -98,7 +98,7 @@ const TaskCard = ({
         </p>
       </div>
 
-      {/* Progress Section: FIXED logic */}
+      
       <div className="pl-3 mb-5">
         <div className="flex justify-between items-center mb-1.5">
           <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Progress</span>

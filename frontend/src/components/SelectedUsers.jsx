@@ -5,7 +5,6 @@ import axiosInstance from "../utils/axioInstance"
 import AvatarGroup from "./AvatarGroup"
 import Modal from "./Modal"
 
-// --- 3D Avatar Component (Fallback for missing profile images) ---
 const ThreeDAvatar = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
     <defs>
@@ -59,7 +58,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
     getUsers()
   }, [])
 
-  /* ---------------- USER ROLE UI ---------------- */
+ 
   if (currentUser) {
     return (
       <div className="mt-2 p-2 bg-indigo-50/50 rounded-xl border border-indigo-100 inline-block">
@@ -117,7 +116,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
                     }
                   `}
                 >
-                  {/* Avatar Section */}
+                 
                   <div className={`relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden border-2 ${isSelected ? "border-indigo-400" : "border-gray-100"}`}>
                     {user.profileImageUrl ? (
                       <img
@@ -131,7 +130,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
                       </div>
                     )}
                     
-                    {/* Active Checkmark Badge over Avatar */}
+                   
                     {isSelected && (
                         <div className="absolute inset-0 bg-indigo-900/20 flex items-center justify-center backdrop-blur-[1px]">
                              <FaCheck className="text-white text-lg drop-shadow-md" />
@@ -139,7 +138,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
                     )}
                   </div>
 
-                  {/* Text Details */}
+                  
                   <div className="flex-1 min-w-0">
                     <p className={`font-bold truncate ${isSelected ? "text-indigo-900" : "text-gray-700"}`}>
                         {user.name}
@@ -149,7 +148,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
                     </p>
                   </div>
 
-                  {/* Hidden Checkbox (Visual handled by parent div state) */}
+                  
                   <input
                     type="checkbox"
                     checked={isSelected}
@@ -157,7 +156,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
                     className="hidden"
                   />
                   
-                  {/* Visual Indicator on the right */}
+                  
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors
                      ${isSelected ? "border-purple-500 bg-purple-500" : "border-gray-300"}
                   `}>
@@ -169,7 +168,7 @@ const SelectedUsers = ({ selectedUser, setSelectedUser }) => {
           </div>
         </div>
 
-        {/* Footer Actions */}
+       
         <div className="flex justify-end pt-6 border-t border-gray-100 mt-4">
           <button
             className="px-8 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
