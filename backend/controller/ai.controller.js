@@ -2,7 +2,7 @@ import { Ollama } from 'ollama';
 import Task from "../models/task.model.js";
 import { errorHandler } from "../utils/error.js";
 
-// Changed 127.0.0.1 to localhost to better match standard PowerShell/Docker mapping
+
 const ollama = new Ollama({ host: 'http://localhost:11434' });
 
 export const getTaskInsights = async (req, res, next) => {
@@ -10,7 +10,7 @@ export const getTaskInsights = async (req, res, next) => {
     try {
         const userId = req.user.id;
 
-        // 1. Fetch relevant tasks
+        
         const tasks = await Task.find({
             $or: [{ assignedTo: userId }, { createdBy: userId }]
         })
@@ -27,7 +27,7 @@ export const getTaskInsights = async (req, res, next) => {
     const completedTasks = tasks.filter(t => t.status === "Completed").length;
     const efficiencyScore = Math.round((completedTasks / totalTasks) * 100);
 
-        // 2. Pre-process data
+        
         const taskSummary = tasks.map((t) => {
             const checklistTotal = t.todoChecklist?.length || 0;
             const checklistDone = t.todoChecklist?.filter((i) => i.completed).length || 0;
@@ -40,7 +40,7 @@ export const getTaskInsights = async (req, res, next) => {
       `;
         }).join("\n");
 
-        // 3. Construct the Prompt
+        
         const systemPrompt = `
              You are the "Task Buddy" AI Project Manager for Prince. 
              Current Efficiency Score: ${efficiencyScore}%
@@ -63,7 +63,7 @@ export const getTaskInsights = async (req, res, next) => {
       Tone: Direct and professional. Keep it under 150 words.
     `;
 
-        // 4. Call Local Ollama
+    
 
         const response = await ollama.chat({
             model: "llama3.2:1b",

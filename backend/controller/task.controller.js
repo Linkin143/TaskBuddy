@@ -45,7 +45,7 @@ export const getTasks = async (req, res, next) => {
       filter.status = status;
     }
 
-    // 🔐 ONLY logged-in user's tasks
+    
     if (req.user.role === "user") {
       filter.assignedTo = req.user.id;
     }
@@ -55,7 +55,7 @@ export const getTasks = async (req, res, next) => {
       "name email profileImageUrl"
     );
 
-    // add completedCount
+    
     tasks = await Promise.all(
       tasks.map(async (task) => {
         const completedCount = task.todoChecklist.filter(
@@ -66,7 +66,7 @@ export const getTasks = async (req, res, next) => {
       })
     );
 
-    // 📊 Status summary (logged-in user only)
+    
     const allTasks = await Task.countDocuments(filter);
 
     const pendingTasks = await Task.countDocuments({
@@ -222,7 +222,7 @@ export const updateTaskChecklist = async (req, res, next) => {
     task.progress =
       totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0
 
-    //   4 task, 1 complete  completedCount / totalItems = (1/4 ) * 100= 25
+    
 
     if (task.progress === 100) {
       task.status = "Completed"
@@ -298,7 +298,7 @@ export const getDashboardData = async (req, res, next) => {
       return acc
     }, {})
 
-    // Fetch recent 10 tasks
+    
     const recentTasks = await Task.find()
       .sort({ createdAt: -1 })
       .limit(10)
@@ -327,14 +327,12 @@ export const userDashboardData = async (req, res, next) => {
   try {
     const userId = req.user.id
 
-    // console.log(userId)
+    
 
-    // Convert userId to ObjectId for proper matching
+    
     const userObjectId = new mongoose.Types.ObjectId(userId)
 
-    // console.log(userObjectId)
-
-    // fetch statistics for user-specific tasks
+    
     const totalTasks = await Task.countDocuments({ assignedTo: userId })
     const pendingTasks = await Task.countDocuments({
       assignedTo: userId,
@@ -362,7 +360,7 @@ export const userDashboardData = async (req, res, next) => {
       },
     ])
 
-    // console.log(taskDistributionRaw)
+    
 
     const taskDistribution = taskStatuses.reduce((acc, status) => {
       const formattedKey = status.replace(/\s+/g, "")
@@ -375,7 +373,7 @@ export const userDashboardData = async (req, res, next) => {
 
     taskDistribution["All"] = totalTasks
 
-    // Task distribution by priority
+   
     const taskPriorities = ["Low", "Medium", "High"]
 
     const taskPriorityLevelRaw = await Task.aggregate([
