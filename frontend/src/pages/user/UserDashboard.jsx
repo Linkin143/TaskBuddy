@@ -1,6 +1,6 @@
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { MdAutoAwesome, MdCheck, MdClose, MdContentCopy, MdRefresh } from "react-icons/md";
+import { MdAssignment, MdAutoAwesome, MdCheck, MdCheckCircle, MdClose, MdContentCopy, MdHourglassEmpty, MdPendingActions, MdRefresh } from "react-icons/md";
 import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,8 @@ const UserDashboard = () => {
 
   // Dynamic Math for UI Efficiency Score
   const totalTasks = dashboardData?.charts?.taskDistribution?.All || 0;
+  const pendingTasks = dashboardData?.charts?.taskDistribution?.Pending || 0;
+  const inProgressTasks = dashboardData?.charts?.taskDistribution?.InProgress || 0;
   const completedTasks = dashboardData?.charts?.taskDistribution?.Completed || 0;
   const currentEfficiency = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
@@ -40,7 +42,6 @@ const UserDashboard = () => {
 
   const cleanInsightText = aiInsight.replace(/FOCUS_START[\s\S]*?FOCUS_END/, "");
 
-  // FIX: Added handleCopy function
   const handleCopy = () => {
     if (aiInsight) {
       navigator.clipboard.writeText(cleanInsightText);
@@ -77,8 +78,6 @@ const UserDashboard = () => {
     try {
       const res = await axiosInstance.get("/user/get-insights", { timeout: 90000 });
       setAiInsight(res.data.insight);
-      
-      // Background Notification Logic
       if (!showAiDialog && Notification.permission === "granted") {
         new Notification("Task Buddy", { body: "Your AI productivity analysis is ready!" });
       }
@@ -91,7 +90,6 @@ const UserDashboard = () => {
 
   const handleClose = () => {
     setShowAiDialog(false);
-    // Persist data for 5 minutes after closing
     cacheTimerRef.current = setTimeout(() => setAiInsight(""), 5 * 60 * 1000);
   };
 
@@ -103,9 +101,21 @@ const UserDashboard = () => {
 
   useEffect(() => { 
     getDashboardData(); 
-    // Cleanup timer on unmount
     return () => { if (cacheTimerRef.current) clearTimeout(cacheTimerRef.current); };
   }, []);
+
+  // Reusable Stat Card Component
+  const TaskStatCard = ({ title, count, icon, bgColor, textColor }) => (
+    <div className={`flex items-center p-6 bg-white rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md font-sans`}>
+      <div className={`p-4 rounded-2xl ${bgColor} ${textColor} mr-4 text-2xl`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">{title}</p>
+        <p className="text-2xl font-black text-slate-800">{count}</p>
+      </div>
+    </div>
+  );
 
   return (
     <DashboardLayout activeMenu="Dashboard">
@@ -115,8 +125,8 @@ const UserDashboard = () => {
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 p-8 shadow-xl text-white font-sans">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 font-sans">
             <div>
-              <h2 className="text-3xl font-extrabold font-sans">Hello, {currentUser?.name} 👋</h2>
-              <p className="opacity-90 font-sans">{moment().format("dddd, Do MMMM YYYY")}</p>
+              <h2 className="text-3xl font-extrabold font-sans text-white">Hello, {currentUser?.name} 👋</h2>
+              <p className="opacity-90 font-sans text-white">{moment().format("dddd, Do MMMM YYYY")}</p>
             </div>
             <button onClick={() => navigate('/user/create-task')} className="px-6 py-3 bg-white text-indigo-600 rounded-xl font-bold shadow-lg transform hover:scale-105 transition-all font-sans">
               Create New Task
@@ -124,7 +134,39 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Floating AI Button with Sticky Title */}
+        {/* Task Counter Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-sans">
+          <TaskStatCard 
+            title="Total Tasks" 
+            count={totalTasks} 
+            icon={<MdAssignment />} 
+            bgColor="bg-indigo-50" 
+            textColor="text-indigo-600" 
+          />
+          <TaskStatCard 
+            title="Pending" 
+            count={pendingTasks} 
+            icon={<MdPendingActions />} 
+            bgColor="bg-amber-50" 
+            textColor="text-amber-600" 
+          />
+          <TaskStatCard 
+            title="In Progress" 
+            count={inProgressTasks} 
+            icon={<MdHourglassEmpty />} 
+            bgColor="bg-sky-50" 
+            textColor="text-sky-600" 
+          />
+          <TaskStatCard 
+            title="Completed" 
+            count={completedTasks} 
+            icon={<MdCheckCircle />} 
+            bgColor="bg-emerald-50" 
+            textColor="text-emerald-600" 
+          />
+        </div>
+
+        {/* Floating AI Button */}
         <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-2 group font-sans">
           <span className="bg-white px-3 py-1 rounded-lg text-xs font-black shadow-xl border border-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
             Get AI Insights
@@ -140,7 +182,7 @@ const UserDashboard = () => {
           </button>
         </div>
 
-        {/* Main Dashboard Stats & Charts */}
+        {/* Main Dashboard Charts */}
         {dashboardData && (
           <div className="space-y-8 font-sans">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 font-sans">
@@ -163,21 +205,18 @@ const UserDashboard = () => {
           </div>
         )}
 
-        {/* AI Dialog with Side Panel */}
+        {/* AI Dialog... (Same as before) */}
         {showAiDialog && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md font-sans">
             <div className="relative w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden font-sans">
-              
-              {/* Dialog Header */}
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 flex items-center justify-between text-white font-sans">
                 <div className="flex items-center gap-3 font-sans">
                   <MdAutoAwesome className="text-3xl text-yellow-300" />
-                  <h3 className="font-bold text-xl tracking-tight font-sans">AI Productivity Analysis</h3>
+                  <h3 className="font-bold text-xl tracking-tight font-sans text-white">AI Productivity Analysis</h3>
                 </div>
                 <button onClick={handleClose} className="p-2 hover:bg-white/10 rounded-full"><MdClose className="text-2xl text-white" /></button>
               </div>
 
-              {/* Dialog Body */}
               <div className="p-8 max-h-[75vh] overflow-y-auto bg-slate-50/30 font-sans">
                 {aiLoading && !aiInsight ? (
                   <div className="flex flex-col items-center justify-center py-20 animate-pulse font-sans">
@@ -186,13 +225,10 @@ const UserDashboard = () => {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 font-sans">
-                    {/* Markdown Analysis */}
                     <div className="lg:col-span-8 bg-white p-8 rounded-3xl shadow-sm border border-slate-100 markdown-content font-sans">
                       <ReactMarkdown>{cleanInsightText}</ReactMarkdown>
-                      {aiLoading && <p className="text-indigo-500 text-xs mt-4 animate-pulse font-sans italic">Updating analysis in background...</p>}
                     </div>
 
-                    {/* Side Panel Stats */}
                     <div className="lg:col-span-4 space-y-6 font-sans">
                       <div className="bg-indigo-600 p-8 rounded-3xl text-white shadow-xl font-sans">
                         <h4 className="text-xs font-bold uppercase tracking-widest opacity-70 mb-2 font-sans text-white">Efficiency</h4>
@@ -212,23 +248,12 @@ const UserDashboard = () => {
                 )}
               </div>
 
-              {/* Dialog Footer Actions */}
               <div className="p-6 bg-white border-t flex justify-between font-sans">
-                <button 
-                  onClick={handleCopy} 
-                  disabled={!aiInsight} 
-                  className="px-6 py-2.5 bg-slate-100 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-200 transition-all text-sm font-sans"
-                >
-                  {copied ? <MdCheck className="text-green-600 font-sans" /> : <MdContentCopy className="font-sans" />} 
-                  {copied ? "Copied!" : "Copy Report"}
+                <button onClick={handleCopy} disabled={!aiInsight} className="px-6 py-2.5 bg-slate-100 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-200 transition-all text-sm font-sans">
+                  {copied ? <MdCheck className="text-green-600 font-sans" /> : <MdContentCopy className="font-sans" />} {copied ? "Copied!" : "Copy Report"}
                 </button>
-                <button 
-                  onClick={fetchAiInsights} 
-                  disabled={aiLoading} 
-                  className={`px-8 py-3 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 font-sans transition-all ${aiLoading ? 'bg-slate-300 cursor-not-allowed text-slate-500' : 'bg-indigo-600 text-white hover:opacity-90'}`}
-                >
-                  <MdRefresh className={aiLoading ? "animate-spin" : ""} /> 
-                  {aiLoading ? "Thinking..." : "Regenerate Analysis"}
+                <button onClick={fetchAiInsights} disabled={aiLoading} className={`px-8 py-3 rounded-xl font-bold text-sm shadow-lg flex items-center gap-2 font-sans transition-all ${aiLoading ? 'bg-slate-300 cursor-not-allowed text-slate-500' : 'bg-indigo-600 text-white hover:opacity-90'}`}>
+                  <MdRefresh className={aiLoading ? "animate-spin" : ""} /> {aiLoading ? "Thinking..." : "Regenerate Analysis"}
                 </button>
               </div>
             </div>
