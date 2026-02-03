@@ -19,21 +19,21 @@ const UserDashboard = () => {
   const [pieChartData, setPieChartData] = useState([]);
   const [barChartData, setBarChartData] = useState([]);
 
-  // AI & UI States
+  
   const [showAiDialog, setShowAiDialog] = useState(false);
   const [aiInsight, setAiInsight] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const cacheTimerRef = useRef(null);
 
-  // Dynamic Math for UI Efficiency Score
+  
   const totalTasks = dashboardData?.charts?.taskDistribution?.All || 0;
   const pendingTasks = dashboardData?.charts?.taskDistribution?.Pending || 0;
   const inProgressTasks = dashboardData?.charts?.taskDistribution?.InProgress || 0;
   const completedTasks = dashboardData?.charts?.taskDistribution?.Completed || 0;
   const currentEfficiency = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Extract Focus Area from AI Tags
+  
   const getFocusArea = () => {
     if (!aiInsight) return "Analyze tasks to generate your focus strategy.";
     const match = aiInsight.match(/FOCUS_START([\s\S]*?)FOCUS_END/);
@@ -104,7 +104,7 @@ const UserDashboard = () => {
     return () => { if (cacheTimerRef.current) clearTimeout(cacheTimerRef.current); };
   }, []);
 
-  // Reusable Stat Card Component
+  
   const TaskStatCard = ({ title, count, icon, bgColor, textColor }) => (
     <div className={`flex items-center p-6 bg-white rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md font-sans`}>
       <div className={`p-4 rounded-2xl ${bgColor} ${textColor} mr-4 text-2xl`}>
@@ -134,7 +134,7 @@ const UserDashboard = () => {
           </div>
         </div>
 
-        {/* Task Counter Cards */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-sans">
           <TaskStatCard 
             title="Total Tasks" 
@@ -166,7 +166,7 @@ const UserDashboard = () => {
           />
         </div>
 
-        {/* Floating AI Button */}
+        
         <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-2 group font-sans">
           <span className="bg-white px-3 py-1 rounded-lg text-xs font-black shadow-xl border border-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity font-sans">
             Get AI Insights
@@ -205,7 +205,7 @@ const UserDashboard = () => {
           </div>
         )}
 
-        {/* AI Dialog... (Same as before) */}
+        
         {showAiDialog && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md font-sans">
             <div className="relative w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden font-sans">
