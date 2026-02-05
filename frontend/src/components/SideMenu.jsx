@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { signOutSuccess } from "../redux/slice/userSlice"
 import axiosInstance from "../utils/axioInstance"
-import { SIDE_MENU_DATA, USER_SIDE_MENU_DATA } from "../utils/data"
+import { USER_SIDE_MENU_DATA } from "../utils/data"
 
 const SideMenu = ({ activeMenu }) => {
   const dispatch = useDispatch()
