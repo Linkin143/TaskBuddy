@@ -138,17 +138,22 @@ export const updateUserProfile = async (req, res, next) => {
 export const uploadImage = async (req, res, next) => {
   try {
     if (!req.file) {
-      return next(errorHandler(400, "No file uploaded"))
+      return res.status(400).json({ message: "No file uploaded" })
     }
 
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename
-      }`
+    const baseUrl =
+      process.env.NODE_ENV === "production"
+        ? process.env.BACKEND_URL
+        : `${req.protocol}://${req.get("host")}`
+
+    const imageUrl = `${baseUrl}/uploads/${req.file.filename}`
 
     res.status(200).json({ imageUrl })
   } catch (error) {
     next(error)
   }
 }
+
 
 export const signout = async (req, res, next) => {
   try {
