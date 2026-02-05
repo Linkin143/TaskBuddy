@@ -14,10 +14,10 @@ const SignUp = () => {
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("") // Added state
+  const [confirmPassword, setConfirmPassword] = useState("") 
   
   const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false) // Added toggle state
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false) 
 
   const [error, setError] = useState(null)
   const [profilePic, setProfilePic] = useState(null)
@@ -42,7 +42,7 @@ const SignUp = () => {
       return
     }
 
-    // New Validation: Check if passwords match
+    
     if (password !== confirmPassword) {
       setError("Passwords do not match")
       return
@@ -50,9 +50,9 @@ const SignUp = () => {
 
     setError(null)
 
-    // SignUp API call
+    
     try {
-      // Upload profile picture if present
+      
       if (profilePic) {
         const imageUploadRes = await uploadImage(profilePic)
         profileImageUrl = imageUploadRes.imageUrl || ""
@@ -62,9 +62,9 @@ const SignUp = () => {
         name: fullName,
         email,
         password,
-        confirmPassword, // Sending this if backend validates it, otherwise safe to include
+        confirmPassword, 
         profileImageUrl,
-        // Removed adminJoinCode
+        
       })
 
       if (response.data) {
@@ -84,11 +84,11 @@ const SignUp = () => {
       <div className="w-full max-w-md font-sans"> 
         <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
           
-          {/* Updated Gradient top border */}
+          
           <div className="h-2 bg-gradient-to-r from-indigo-500 via-sky-500 to-purple-500"></div>
 
           <div className="p-8">
-            {/* Logo and title */}
+            
             <div className="text-center mb-8">
               <div className="flex justify-center">
                 <div className="bg-indigo-50 p-3 rounded-full">
@@ -105,7 +105,7 @@ const SignUp = () => {
               </p>
             </div>
 
-            {/* Signup Form */}
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <ProfilePhotoSelector
                 image={profilePic}
@@ -179,7 +179,7 @@ const SignUp = () => {
                 </div>
               </div>
 
-              {/* Confirm Password Field (Replaced Admin Token) */}
+              
               <div>
                 <label 
                   htmlFor="confirmPassword"

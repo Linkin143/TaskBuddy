@@ -5,7 +5,7 @@ import { errorHandler } from "../utils/error.js";
 
 
 export const signup = async (req, res, next) => {
-  
+
   const { name, email, password, confirmPassword, profileImageUrl } = req.body;
 
   if (
@@ -33,7 +33,7 @@ export const signup = async (req, res, next) => {
     return next(errorHandler(400, "User already exists"));
   }
 
-  
+
   // Defaulting strictly to user for this public signup form
   const role = "user";
 
@@ -83,7 +83,12 @@ export const signin = async (req, res, next) => {
 
     const { password: pass, ...rest } = validUser._doc
 
-    res.status(200).cookie("access_token", token, { httpOnly: true }).json(rest)
+    res.status(200).cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    }).json(rest)
   } catch (error) {
     next(error)
   }
@@ -136,9 +141,8 @@ export const uploadImage = async (req, res, next) => {
       return next(errorHandler(400, "No file uploaded"))
     }
 
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${
-      req.file.filename
-    }`
+    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename
+      }`
 
     res.status(200).json({ imageUrl })
   } catch (error) {
