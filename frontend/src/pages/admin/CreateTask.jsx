@@ -14,7 +14,6 @@ import SelectedUsers from "../../components/SelectedUsers"
 import TodoListInput from "../../components/TodoListInput"
 import axiosInstance from "../../utils/axioInstance"
 
-// --- 3D Avatar Component (Use this in your SelectedUsers component) ---
 export const ThreeDAvatar = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md">
     <defs>
@@ -35,7 +34,6 @@ export const ThreeDAvatar = () => (
 const CreateTask = () => {
   const location = useLocation()
   const { taskId } = location.state || {}
-
   const navigate = useNavigate()
 
   const [taskData, setTaskData] = useState({
@@ -49,10 +47,8 @@ const CreateTask = () => {
   })
 
   const [currentTask, setCurrentTask] = useState(null)
-
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false)
 
   const handleValueChange = (key, value) => {
@@ -63,7 +59,6 @@ const CreateTask = () => {
   }
 
   const clearData = () => {
-    // reset form data
     setTaskData({
       title: "",
       description: "",
@@ -75,7 +70,6 @@ const CreateTask = () => {
     })
   }
 
-  // create task
   const createTask = async () => {
     try {
       const todolist = taskData.todoChecklist?.map((item) => ({
@@ -83,48 +77,40 @@ const CreateTask = () => {
         completed: false,
       }))
 
-      const response = await axiosInstance.post("/tasks/create", {
+      await axiosInstance.post("/tasks/create", {
         ...taskData,
         dueDate: new Date(taskData.dueDate).toISOString(),
         todoChecklist: todolist,
       })
 
       toast.success("Task created successfully!")
-
       clearData();
-
       navigate("/user/tasks");
-
-      
     } catch (error) {
       console.log("Error creating task: ", error)
       toast.error("Error creating task!")
     }
   }
 
-  // update task
   const updateTask = async () => {
     try {
       const todolist = taskData.todoChecklist?.map((item) => {
         const prevTodoChecklist = currentTask?.todoChecklist || []
         const matchedTask = prevTodoChecklist.find((task) => task.text === item)
-
         return {
           text: item,
           completed: matchedTask ? matchedTask.completed : false,
         }
       })
 
-      const response = await axiosInstance.put(`/tasks/${taskId}`, {
+      await axiosInstance.put(`/tasks/${taskId}`, {
         ...taskData,
         dueDate: new Date(taskData.dueDate).toISOString(),
         todoChecklist: todolist,
       })
 
       toast.success("Task updated successfully!")
-      
       navigate("/user/tasks")
-      console.log(response.data)
     } catch (error) {
       console.log("Error updating task: ", error)
       toast.error("Error updating task!")
@@ -133,61 +119,33 @@ const CreateTask = () => {
 
   const handleSubmit = async (e) => {
     setError("")
-
-    if (!taskData.title.trim()) {
-      setError("Title is required!")
-      return
-    }
-
-    if (!taskData.description.trim()) {
-      setError("Description is required!")
-      return
-    }
-
-    if (!taskData.dueDate) {
-      setError("Due date is required!")
-      return
-    }
-
-    if (taskData.assignedTo?.length === 0) {
-      setError("Task is not assigned to any member!")
-      return
-    }
-
-    if (taskData.todoChecklist?.length === 0) {
-      setError("Add atleast one todo task!")
-      return
-    }
+    if (!taskData.title.trim()) { setError("Title is required!"); return; }
+    if (!taskData.description.trim()) { setError("Description is required!"); return; }
+    if (!taskData.dueDate) { setError("Due date is required!"); return; }
+    if (taskData.assignedTo?.length === 0) { setError("Task is not assigned to any member!"); return; }
+    if (taskData.todoChecklist?.length === 0) { setError("Add atleast one todo task!"); return; }
 
     if (taskId) {
       updateTask()
-
       return
     }
-
     createTask()
   }
-
 
   const getTaskDetailsById = async () => {
     try {
       const response = await axiosInstance.get(`/tasks/${taskId}`)
-
       if (response.data) {
         const taskInfo = response.data
         setCurrentTask(taskInfo)
-
         setTaskData((prevState) => ({
           ...prevState,
           title: taskInfo?.title,
           description: taskInfo?.description,
           priority: taskInfo?.priority,
-          dueDate: taskInfo?.dueDate
-            ? moment(taskInfo?.dueDate).format("YYYY-MM-DD")
-            : null,
+          dueDate: taskInfo?.dueDate ? moment(taskInfo?.dueDate).toDate() : null,
           assignedTo: taskInfo?.assignedTo?.map((item) => item?._id || []),
-          todoChecklist:
-            taskInfo?.todoChecklist?.map((item) => item?.text) || [],
+          todoChecklist: taskInfo?.todoChecklist?.map((item) => item?.text) || [],
           attachments: taskInfo?.attachments || [],
         }))
       }
@@ -196,15 +154,11 @@ const CreateTask = () => {
     }
   }
 
-  // delete task
   const deleteTask = async () => {
     try {
       await axiosInstance.delete(`/tasks/${taskId}`)
-
       setOpenDeleteAlert(false)
-
       toast.success("Task deleted successfully!")
-
       navigate("/admin/tasks")
     } catch (error) {
       console.log("Error delating task: ", error)
@@ -215,61 +169,52 @@ const CreateTask = () => {
     if (taskId) {
       getTaskDetailsById(taskId)
     }
-
-    return () => {}
   }, [taskId])
 
-  const inputContainerStyle = "relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 transition-all duration-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 focus-within:border-indigo-400 focus-within:shadow-[0_4px_12px_rgba(99,102,241,0.1)]"
-  
+  const inputContainerStyle = "relative flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 transition-all duration-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-200 focus-within:border-indigo-400 focus-within:shadow-[0_4px_12px_rgba(99,102,241,0.1)]"
   const labelStyle = "block text-sm font-semibold text-gray-700 mb-1.5 ml-1"
 
   return (
     <DashboardLayout activeMenu={"Create Task"}>
-      <div className="p-6 bg-gray-50/50 min-h-screen">
-        
-        {/* Main Card */}
-        <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100">
+      <div className="p-3 sm:p-6 bg-gray-50/50 min-h-screen">
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl sm:rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100">
           
-          {/* Header */}
-          <div className="px-8 py-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 flex justify-between items-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+          <div className="px-5 py-5 sm:px-8 sm:py-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500 flex flex-row justify-between items-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 sm:w-64 sm:h-64 bg-white opacity-10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
             
-            {/* Standardized Header Font */}
-            <h2 className="text-2xl font-bold text-white tracking-wide relative z-10">
-              {taskId ? "Update Task Details" : "Create New Task"}
+            <h2 className="text-lg sm:text-2xl font-bold text-white tracking-wide relative z-10">
+              {taskId ? "Update Task" : "New Task"}
             </h2>
 
             {taskId && (
               <button
-                className="group relative z-10 flex items-center gap-2 bg-white/20 hover:bg-red-500 text-white px-4 py-2 rounded-xl hover:cursor-pointer transition-all duration-300 backdrop-blur-sm border border-white/30 hover:border-red-400"
+                className="group relative z-10 flex items-center gap-1 sm:gap-2 bg-white/20 hover:bg-red-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl hover:cursor-pointer transition-all duration-300 backdrop-blur-sm border border-white/30 hover:border-red-400"
                 onClick={() => setOpenDeleteAlert(true)}
               >
-                <MdDelete className="text-xl" /> 
-                <span className="font-medium text-sm">Delete</span>
+                <MdDelete className="text-lg sm:text-xl" /> 
+                <span className="font-medium text-xs sm:text-sm">Delete</span>
               </button>
             )}
           </div>
 
-          <div className="p-8">
+          <div className="p-5 sm:p-8">
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium rounded-r-lg shadow-sm flex items-center animate-pulse">
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+              <div className="mb-6 p-3 sm:p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm font-medium rounded-r-lg shadow-sm flex items-center animate-pulse">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
-              <div className="space-y-7">
+              <div className="space-y-5 sm:space-y-7">
                 
-                {/* Title Section */}
                 <div>
                   <label className={labelStyle}>Task Title <span className="text-red-500">*</span></label>
                   <div className={inputContainerStyle}>
-                    <MdOutlineTitle className="text-indigo-400 text-lg mr-3" />
+                    <MdOutlineTitle className="text-indigo-400 text-lg mr-2 sm:mr-3 flex-shrink-0" />
                     <input
                       type="text"
                       placeholder="e.g. Redesign Dashboard UI"
-                      
                       className="w-full bg-transparent border-none focus:outline-none text-gray-900 placeholder-gray-400 text-sm"
                       value={taskData.title}
                       onChange={(e) => handleValueChange("title", e.target.value)}
@@ -277,11 +222,10 @@ const CreateTask = () => {
                   </div>
                 </div>
 
-                {/* Description Section */}
                 <div>
                   <label className={labelStyle}>Description <span className="text-red-500">*</span></label>
                   <div className={`${inputContainerStyle} items-start`}>
-                    <MdDescription className="text-indigo-400 text-lg mr-3 mt-1" />
+                    <MdDescription className="text-indigo-400 text-lg mr-2 sm:mr-3 mt-1 flex-shrink-0" />
                     <textarea
                       placeholder="Detailed explanation of the task..."
                       rows={4}
@@ -292,20 +236,19 @@ const CreateTask = () => {
                   </div>
                 </div>
 
-                {/* Grid: Priority & Due Date */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                   <div>
                     <label className={labelStyle}>Priority Level</label>
                     <div className={inputContainerStyle}>
-                      <MdLowPriority className="text-indigo-400 text-lg mr-3" />
+                      <MdLowPriority className="text-indigo-400 text-lg mr-2 sm:mr-3 flex-shrink-0" />
                       <select
                         className="w-full bg-transparent border-none focus:outline-none text-gray-900 text-sm cursor-pointer"
                         value={taskData.priority}
                         onChange={(e) => handleValueChange("priority", e.target.value)}
                       >
-                        <option value="Low">🟢 Low Priority</option>
-                        <option value="Medium">🟠 Medium Priority</option>
-                        <option value="High">🔴 High Priority</option>
+                        <option value="Low">Low Priority</option>
+                        <option value="Medium">Medium Priority</option>
+                        <option value="High">High Priority</option>
                       </select>
                     </div>
                   </div>
@@ -313,7 +256,7 @@ const CreateTask = () => {
                   <div>
                     <label className={labelStyle}>Due Date <span className="text-red-500">*</span></label>
                     <div className={inputContainerStyle}>
-                      <MdDateRange className="text-indigo-400 text-lg mr-3 z-10" />
+                      <MdDateRange className="text-indigo-400 text-lg mr-2 sm:mr-3 z-10 flex-shrink-0" />
                       <div className="w-full">
                         <DatePicker
                           selected={taskData.dueDate}
@@ -328,10 +271,9 @@ const CreateTask = () => {
                   </div>
                 </div>
 
-                {/* Assign To Section */}
                 <div>
                    <label className={labelStyle}>Assigned To You</label>
-                   <div className="p-1">
+                   <div className="p-0 sm:p-1 overflow-x-auto">
                       <SelectedUsers
                         selectedUser={taskData.assignedTo}
                         setSelectedUser={(value) => handleValueChange("assignedTo", value)}
@@ -339,10 +281,9 @@ const CreateTask = () => {
                    </div>
                 </div>
 
-                {/* Todo Checklist */}
                 <div>
                    <label className={labelStyle}>Sub-tasks & Checklist</label>
-                   <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                   <div className="bg-gray-50/50 p-3 sm:p-4 rounded-xl border border-gray-100">
                       <TodoListInput
                         todoList={taskData?.todoChecklist}
                         setTodoList={(value) => handleValueChange("todoChecklist", value)}
@@ -350,10 +291,9 @@ const CreateTask = () => {
                    </div>
                 </div>
 
-                {/* Attachments */}
                 <div>
                    <label className={labelStyle}>Attachments</label>
-                   <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                   <div className="bg-gray-50/50 p-3 sm:p-4 rounded-xl border border-gray-100 overflow-hidden">
                       <AddAttachmentsInput
                         attachments={taskData?.attachments}
                         setAttachments={(value) => handleValueChange("attachments", value)}
@@ -361,15 +301,13 @@ const CreateTask = () => {
                    </div>
                 </div>
 
-                {/* Submit Button */}
                 <div className="pt-4">
                   <button
-                    
-                    className="w-full py-3.5 hover:cursor-pointer bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-500 text-white text-base font-semibold tracking-wide rounded-xl shadow-[0_10px_20px_-5px_rgba(99,102,241,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.5)] transform hover:-translate-y-1 transition-all duration-300"
+                    className="w-full py-3 sm:py-3.5 hover:cursor-pointer bg-gradient-to-r from-indigo-500 via-purple-500 to-sky-500 text-white text-sm sm:text-base font-semibold tracking-wide rounded-xl shadow-[0_10px_20px_-5px_rgba(99,102,241,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(99,102,241,0.5)] transform hover:-translate-y-1 transition-all duration-300"
                     onClick={handleSubmit}
                     type="button"
                   >
-                    {taskId ? "Update Task Configuration" : "Create New Task"}
+                    {taskId ? "Update Task" : "Create Task"}
                   </button>
                 </div>
 
@@ -393,4 +331,4 @@ const CreateTask = () => {
   )
 }
 
-export default CreateTask
+export default CreateTask;

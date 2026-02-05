@@ -9,11 +9,9 @@ import axiosInstance from "../../utils/axioInstance";
 
 const ManageTasks = () => {
   const [allTasks, setAllTasks] = useState([])
-  const [tabs, setTabs] = useState("All")
+  const [tabs, setTabs] = useState([])
   const [filterStatus, setFilterStatus] = useState("All")
   const [isDownloading, setIsDownloading] = useState(false)
-
-  console.log(tabs)
 
   const navigate = useNavigate()
 
@@ -48,7 +46,6 @@ const ManageTasks = () => {
     navigate("/user/create-task", { state: { taskId: taskData._id } })
   }
 
-  // --- REPORT DOWNLOAD LOGIC ---
   const handleDownloadReport = async () => {
     setIsDownloading(true)
     try {
@@ -56,17 +53,12 @@ const ManageTasks = () => {
         responseType: "blob",
       })
 
-      // create a url for the blob
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement("a")
-
       link.href = url
-
       link.setAttribute("download", "tasks_details.xlsx")
       document.body.appendChild(link)
-
       link.click()
-
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
 
@@ -81,84 +73,104 @@ const ManageTasks = () => {
 
   useEffect(() => {
     getAllTasks(filterStatus)
-
-    return () => { }
   }, [filterStatus])
 
   return (
     <DashboardLayout activeMenu={"Manage Task"}>
-      <div className="my-6 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-          <div className="flex items-center justify-between gap-4 w-full md:w-auto ">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+      <div className="my-4 md:my-6 px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
+        <div className="flex flex-col gap-6 mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <h2 className="text-2xl md:text-3xl font-black text-gray-800 tracking-tight">
               Manage Tasks
             </h2>
 
+            {/* Export Button for Desktop/Tablet */}
             <button
-              className="md:hidden px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md cursor-pointer"
               onClick={handleDownloadReport}
-              type="button"
+              disabled={isDownloading}
+              className={`
+                hidden sm:flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300
+                shadow-[0_4px_10px_-2px_rgba(99,102,241,0.3)] hover:shadow-[0_10px_20px_-5px_rgba(99,102,241,0.4)] hover:-translate-y-0.5
+                ${isDownloading
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+                  : "bg-white text-indigo-600 border border-indigo-100 hover:border-indigo-300"
+                }
+              `}
             >
-              Download
+              {isDownloading ? (
+                <div className="w-5 h-5 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
+              ) : (
+                <MdCloudDownload className="text-xl" />
+              )}
+              <span>{isDownloading ? "Downloading..." : "Export Report"}</span>
             </button>
           </div>
 
-          {allTasks?.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+          {/* Filters and Mobile Action */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0">
               <TaskStatusTabs
                 tabs={tabs}
                 activeTab={filterStatus}
                 setActiveTab={setFilterStatus}
               />
-
-              {/* Download Button */}
-              <button
-                onClick={handleDownloadReport}
-                disabled={isDownloading}
-                className={`
-                              group relative flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300
-                              shadow-[0_4px_10px_-2px_rgba(99,102,241,0.3)] hover:shadow-[0_10px_20px_-5px_rgba(99,102,241,0.4)] hover:-translate-y-0.5 hover:cursor-pointer
-                              ${isDownloading
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
-                    : "bg-white text-indigo-600 border border-indigo-100 hover:border-indigo-300"
-                  }
-                            `}
-              >
-                {isDownloading ? (
-                  <div className="w-5 h-5 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
-                ) : (
-                  <div className="p-1.5 bg-indigo-50 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                    <MdCloudDownload className="text-lg" />
-                  </div>
-                )}
-                <span>{isDownloading ? "Downloading..." : "Export Report"}</span>
-              </button>
             </div>
-          )}
+
+            {/* Export Button for Mobile (Full Width) */}
+            <button
+              onClick={handleDownloadReport}
+              disabled={isDownloading}
+              className={`
+                sm:hidden flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-bold text-sm transition-all
+                ${isDownloading
+                  ? "bg-gray-100 text-gray-400"
+                  : "bg-indigo-600 text-white shadow-lg shadow-indigo-200"
+                }
+              `}
+            >
+              {isDownloading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <MdCloudDownload className="text-xl" />
+              )}
+              {isDownloading ? "Downloading..." : "Export Report"}
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allTasks?.map((item, index) => (
-            <TaskCard
-              key={item._id}
-              title={item.title}
-              description={item.description}
-              priority={item.priority}
-              status={item.status}
-              progress={item.progress}
-              createdAt={item.createdAt}
-              dueDate={item.dueDate}
-              assignedTo={item.assignedTo?.map((item) => item.profileImageUrl)}
-              attachmentCount={item.attachments?.length || 0}
-              completedTodoCount={item.completedTodoCount || 0}
-              todoChecklist={item.todoChecklist || []}
-              onClick={() => handleClick(item)}
-            />
-          ))}
+        {/* Tasks Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {allTasks?.length > 0 ? (
+            allTasks.map((item) => (
+              <TaskCard
+                key={item._id}
+                title={item.title}
+                description={item.description}
+                priority={item.priority}
+                status={item.status}
+                progress={item.progress}
+                createdAt={item.createdAt}
+                dueDate={item.dueDate}
+                assignedTo={item.assignedTo?.map((u) => u.profileImageUrl)}
+                attachmentCount={item.attachments?.length || 0}
+                completedTodoCount={item.completedTodoCount || 0}
+                todoChecklist={item.todoChecklist || []}
+                onClick={() => handleClick(item)}
+              />
+            ))
+          ) : (
+            <div className="col-span-full flex flex-col items-center justify-center py-20 text-center bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-200">
+              <div className="text-5xl mb-4 opacity-20">📂</div>
+              <h3 className="text-lg font-bold text-gray-600">No tasks found</h3>
+              <p className="text-gray-400">Try adjusting your filters or create a new task.</p>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
   )
 }
 
-export default ManageTasks
+export default ManageTasks;

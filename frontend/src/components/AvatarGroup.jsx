@@ -1,21 +1,34 @@
-import React from "react"
 
 const AvatarGroup = ({ avatars, maxVisible = 3 }) => {
   return (
     <div className="flex items-center">
-      {avatars.slice(0, maxVisible).map((avatar, index) => (
-        <img
-          key={index}
-          src={avatar}
-          alt={`Avatar-${index + 1}`}
-          className="w-10 h-10 rounded-full border-2 border-white -ml-3 first:ml-0"
-        />
-      ))}
+      <div className="flex -space-x-2 sm:-space-x-3 overflow-hidden">
+        {avatars.slice(0, maxVisible).map((avatar, index) => (
+          <div 
+            key={index}
+            className="relative inline-block"
+          >
+            <img
+              src={avatar}
+              alt={`Avatar-${index + 1}`}
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-white object-cover shadow-sm bg-gray-100"
+            />
+          </div>
+        ))}
 
+        {avatars.length > maxVisible && (
+          <div className="relative inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-indigo-50 rounded-full border-2 border-white shadow-sm flex-shrink-0">
+            <span className="text-[10px] sm:text-xs font-bold text-indigo-600">
+              +{avatars.length - maxVisible}
+            </span>
+          </div>
+        )}
+      </div>
+      
       {avatars.length > maxVisible && (
-        <div className="w-9 h-9 flex items-center justify-center bg-blue-50 text-sm font-medium rounded-full border-2 border-white -ml-3">
-          +{avatars.length - maxVisible} more
-        </div>
+        <span className="hidden md:inline-block ml-2 text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+          more
+        </span>
       )}
     </div>
   )

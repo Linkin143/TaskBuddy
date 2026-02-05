@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom"
 import DashboardLayout from "../../components/DashboardLayout"
 import axiosInstance from "../../utils/axioInstance"
 
-
 const ThreeDAvatar = () => (
   <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
     <defs>
@@ -28,7 +27,6 @@ const TaskDetails = () => {
   const { id } = useParams()
   const [task, setTask] = useState(null)
 
-  
   const getStatusStyle = (status) => {
     switch (status) {
       case "In Progress":
@@ -53,23 +51,18 @@ const TaskDetails = () => {
 
   const updateTodoChecklist = async (index) => {
     const todoChecklist = [...task?.todoChecklist]
-    
     if (todoChecklist && todoChecklist[index]) {
       todoChecklist[index].completed = !todoChecklist[index].completed
-
       try {
         const response = await axiosInstance.put(`/tasks/${id}/todo`, {
           todoChecklist,
         })
-
         if (response.status === 200) {
           setTask(response.data?.task || task)
         } else {
-          // Revert if failed
           todoChecklist[index].completed = !todoChecklist[index].completed
         }
       } catch (error) {
-        
         todoChecklist[index].completed = !todoChecklist[index].completed
       }
     }
@@ -90,36 +83,35 @@ const TaskDetails = () => {
 
   return (
     <DashboardLayout activeMenu={"My Tasks"}>
-      <div className="p-6 bg-gray-50/50 min-h-screen">
+      <div className="p-3 sm:p-6 bg-gray-50/50 min-h-screen">
         {task && (
           <div className="max-w-5xl mx-auto space-y-6">
             
             {/* Main Card */}
-            <div className="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] overflow-hidden border border-indigo-50">
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] overflow-hidden border border-indigo-50">
               
               {/* Header Gradient */}
-              <div className="relative px-8 py-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+              <div className="relative px-5 py-6 sm:px-8 sm:py-8 bg-gradient-to-r from-indigo-600 via-purple-600 to-sky-500">
+                <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 bg-white opacity-10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
                 
-                <div className="relative z-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-3">
-                       <span className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest ${getStatusStyle(task?.status)}`}>
+                <div className="relative z-10 flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                  <div className="flex-1">
+                    <div className="flex flex-wrap items-center gap-3 mb-3">
+                       <span className={`px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest ${getStatusStyle(task?.status)}`}>
                           {task?.status}
                        </span>
-                       <span className="text-indigo-100 text-xs font-semibold bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                       <span className="text-indigo-100 text-[10px] sm:text-xs font-semibold bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
                           ID: {task?._id?.slice(-6)}
                        </span>
                     </div>
-                    <h2 className="text-3xl font-black text-white tracking-tight leading-tight">
+                    <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight leading-tight break-words">
                       {task?.title}
                     </h2>
                   </div>
                   
-                  
-                  <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-xl flex flex-col items-center min-w-[100px]">
-                      <span className="text-indigo-100 text-[10px] font-bold uppercase tracking-wider mb-1">Priority</span>
-                      <span className={`text-lg font-black ${
+                  <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3 sm:p-4 rounded-2xl shadow-xl flex flex-row md:flex-col items-center justify-between md:justify-center min-w-[100px]">
+                      <span className="text-indigo-100 text-[10px] font-bold uppercase tracking-wider md:mb-1">Priority</span>
+                      <span className={`text-base sm:text-lg font-black ${
                         task?.priority === 'High' ? 'text-rose-300' : 
                         task?.priority === 'Medium' ? 'text-amber-300' : 'text-emerald-300'
                       }`}>
@@ -129,53 +121,49 @@ const TaskDetails = () => {
                 </div>
               </div>
 
-              <div className="p-8">
+              <div className="p-5 sm:p-8">
                 {/* Description Section */}
                 <div className="mb-8">
-                   <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800 mb-4">
+                   <h3 className="flex items-center gap-2 text-base sm:text-lg font-bold text-gray-800 mb-4">
                       <MdDescription className="text-indigo-500 text-xl" />
                       Description
                    </h3>
-                   <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 text-gray-600 leading-relaxed font-medium shadow-inner">
+                   <div className="bg-slate-50 p-4 sm:p-6 rounded-2xl border border-slate-100 text-gray-600 leading-relaxed font-medium shadow-inner break-words text-sm sm:text-base">
                       {task?.description}
                    </div>
                 </div>
 
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                   
-                   {/* Due Date Card */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8">
                    <InfoBox 
                       icon={<MdCalendarToday className="text-sky-500" />}
                       label="Due Date"
-                      value={task?.dueDate ? moment(task?.dueDate).format("dddd, Do MMMM YYYY") : "N/A"}
+                      value={task?.dueDate ? moment(task?.dueDate).format("ddd, Do MMM YYYY") : "N/A"}
                       color="bg-sky-50 border-sky-100"
                    />
 
-                   {/* Assigned To Card */}
-                   <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-5 shadow-sm">
+                   <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 sm:p-5 shadow-sm">
                       <div className="flex items-center gap-2 mb-3">
                          <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
                             <MdPerson />
                          </div>
-                         <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">Assigned To</span>
+                         <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Assigned To</span>
                       </div>
                       
                       <div className="flex flex-wrap gap-2">
                         {task?.assignedTo?.map((user, idx) => (
-                           <div key={idx} className="flex items-center gap-2 bg-white pr-4 rounded-full border border-indigo-100 shadow-sm p-1">
-                              <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-100">
+                           <div key={idx} className="flex items-center gap-2 bg-white pr-3 sm:pr-4 rounded-full border border-indigo-100 shadow-sm p-1">
+                              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-slate-100">
                                  {user?.profileImageUrl ? (
                                     <img src={user.profileImageUrl} alt="user" className="w-full h-full object-cover" />
                                  ) : (
                                     <ThreeDAvatar />
                                  )}
                               </div>
-                              <span className="text-sm font-bold text-gray-700">{user?.name}</span>
+                              <span className="text-xs sm:text-sm font-bold text-gray-700 truncate max-w-[100px]">{user?.name}</span>
                            </div>
                         ))}
                         {(!task?.assignedTo || task?.assignedTo.length === 0) && (
-                           <span className="text-sm text-gray-400 font-medium italic">No members assigned</span>
+                           <span className="text-xs text-gray-400 font-medium italic">No members assigned</span>
                         )}
                       </div>
                    </div>
@@ -183,12 +171,12 @@ const TaskDetails = () => {
 
                 {/* Checklist Section */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between mb-4">
-                       <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                       <h3 className="flex items-center gap-2 text-base sm:text-lg font-bold text-gray-800">
                           <MdAssignment className="text-purple-500 text-xl" />
                           Checklist
                        </h3>
-                       <span className="text-xs font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                       <span className="w-fit text-[10px] font-bold text-purple-600 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
                           {task?.todoChecklist?.filter(t => t.completed).length} / {task?.todoChecklist?.length} Done
                        </span>
                     </div>
@@ -203,7 +191,7 @@ const TaskDetails = () => {
                         />
                       ))}
                       {task?.todoChecklist?.length === 0 && (
-                         <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-400 font-medium">
+                         <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-400 font-medium text-sm">
                             No sub-tasks added
                          </div>
                       )}
@@ -213,7 +201,7 @@ const TaskDetails = () => {
                 {/* Attachments Section */}
                 {task?.attachments?.length > 0 && (
                   <div>
-                    <h3 className="flex items-center gap-2 text-lg font-bold text-gray-800 mb-4">
+                    <h3 className="flex items-center gap-2 text-base sm:text-lg font-bold text-gray-800 mb-4">
                        <MdAttachFile className="text-orange-500 text-xl" />
                        Attachments
                     </h3>
@@ -240,14 +228,14 @@ const TaskDetails = () => {
 
 const InfoBox = ({ icon, label, value, color }) => {
   return (
-    <div className={`${color} rounded-2xl p-5 shadow-sm transition-transform hover:scale-[1.02] duration-300`}>
+    <div className={`${color} rounded-2xl p-4 sm:p-5 shadow-sm transition-transform hover:scale-[1.01] duration-300 border`}>
        <div className="flex items-center gap-2 mb-2">
-          <div className="p-2 bg-white rounded-lg shadow-sm">
+          <div className="p-1.5 sm:p-2 bg-white rounded-lg shadow-sm">
              {icon}
           </div>
-          <span className="text-sm font-bold text-gray-500 uppercase tracking-wide">{label}</span>
+          <span className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wide">{label}</span>
        </div>
-       <p className="text-lg font-bold text-gray-800 pl-1">{value}</p>
+       <p className="text-sm sm:text-lg font-bold text-gray-800 pl-1">{value}</p>
     </div>
   )
 }
@@ -257,26 +245,25 @@ const TodoCheckList = ({ text, isChecked, onChange }) => {
     <div 
       onClick={onChange}
       className={`
-        flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 cursor-pointer group
+        flex items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border transition-all duration-300 cursor-pointer group
         ${isChecked 
             ? "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 shadow-inner" 
             : "bg-white border-gray-200 shadow-[0_4px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-md hover:border-indigo-200"
         }
       `}
     >
-      
       <div className={`
-         w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-300 border-2
-         ${isChecked 
+          mt-1 sm:mt-0 flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center transition-all duration-300 border-2
+          ${isChecked 
             ? "bg-emerald-500 border-emerald-500 shadow-[0_2px_5px_rgba(16,185,129,0.4)]" 
             : "bg-white border-gray-300 group-hover:border-indigo-400"
-         }
+          }
       `}>
-         {isChecked && <FaCheck className="text-white text-xs" />}
+          {isChecked && <FaCheck className="text-white text-[10px]" />}
       </div>
 
-      <p className={`text-sm font-semibold transition-colors duration-300 ${isChecked ? "text-emerald-700 line-through opacity-70" : "text-gray-700"}`}>
-         {text}
+      <p className={`text-xs sm:text-sm font-semibold transition-colors duration-300 break-words ${isChecked ? "text-emerald-700 line-through opacity-70" : "text-gray-700"}`}>
+          {text}
       </p>
     </div>
   )
@@ -285,23 +272,23 @@ const TodoCheckList = ({ text, isChecked, onChange }) => {
 const Attachment = ({ link, index, onClick }) => {
   return (
     <div
-      className="group flex items-center justify-between bg-white border border-gray-200 p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300"
+      className="group flex items-center justify-between bg-white border border-gray-200 p-3 sm:p-4 rounded-xl cursor-pointer shadow-sm hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.1)] hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300"
       onClick={onClick}
     >
-      <div className="flex items-center gap-4 overflow-hidden">
-        <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 font-bold shadow-sm group-hover:bg-orange-500 group-hover:text-white transition-colors">
+      <div className="flex items-center gap-3 sm:gap-4 overflow-hidden flex-1">
+        <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-500 text-sm font-bold shadow-sm group-hover:bg-orange-500 group-hover:text-white transition-colors">
            {index + 1}
         </div>
         <div className="flex flex-col min-w-0">
-           <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">File</span>
-           <p className="text-sm font-semibold text-gray-700 truncate w-full group-hover:text-indigo-600 transition-colors">
+           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">File</span>
+           <p className="text-xs sm:text-sm font-semibold text-gray-700 truncate group-hover:text-indigo-600 transition-colors">
              {link}
            </p>
         </div>
       </div>
 
-      <div className="p-2 bg-gray-50 rounded-full group-hover:bg-indigo-50 transition-colors">
-         <FaExternalLinkAlt className="text-gray-400 text-xs group-hover:text-indigo-500" />
+      <div className="flex-shrink-0 p-2 bg-gray-50 rounded-full group-hover:bg-indigo-50 transition-colors ml-2">
+         <FaExternalLinkAlt className="text-gray-400 text-[10px] group-hover:text-indigo-500" />
       </div>
     </div>
   )

@@ -1,25 +1,27 @@
-import React from "react"
 
 const UserCard = ({ userInfo }) => {
   return (
-    <div className="p-2 bg-white rounded-xl shadow-md shadow-gray-100 border border-gray-200/50">
+    <div className="p-3 sm:p-4 bg-white rounded-2xl shadow-md shadow-gray-100 border border-gray-200/50 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <img
             src={userInfo?.profileImageUrl}
             alt={userInfo?.name}
-            className="h-12 w-12 rounded-full object-cover border-2 border-white"
+            className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0"
           />
 
-          <div className="">
-            <p className="text-lg font-medium">{userInfo?.name}</p>
-
-            <p className="text-sm text-gray-500">{userInfo?.email}</p>
+          <div className="min-w-0">
+            <p className="text-base sm:text-lg font-bold text-gray-800 truncate">
+              {userInfo?.name}
+            </p>
+            <p className="text-xs sm:text-sm text-gray-500 truncate">
+              {userInfo?.email}
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="flex items-end gap-3 mt-5">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 mt-4 sm:mt-5">
         <StatCard
           label="Pending"
           count={userInfo?.pendingTasks || 0}
@@ -48,25 +50,22 @@ const StatCard = ({ label, count, status }) => {
   const getStatusTagColor = () => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800"
-
+        return "bg-yellow-50 text-yellow-700 border-yellow-100"
       case "in-progress":
-        return "bg-blue-100 text-blue-800"
-
+        return "bg-blue-50 text-blue-700 border-blue-100"
       case "completed":
-        return "bg-green-100 text-green-800"
-
+        return "bg-green-50 text-green-700 border-green-100"
       default:
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-gray-50 text-gray-700 border-gray-100"
     }
   }
 
   return (
     <div
-      className={`flex flex-1 text-[10px]  font-medium ${getStatusTagColor()} px-4 py-0.5 rounded-lg items-center gap-1`}
+      className={`flex flex-1 items-center justify-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg border text-[10px] sm:text-xs font-bold whitespace-nowrap transition-colors ${getStatusTagColor()}`}
     >
-      <span className="text-[12px] font-semibold">{count}</span>{" "}
-      <span>{label}</span>
+      <span className="text-xs sm:text-sm">{count}</span>
+      <span className="opacity-80">{label}</span>
     </div>
   )
 }

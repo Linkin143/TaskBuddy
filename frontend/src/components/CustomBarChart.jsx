@@ -1,31 +1,25 @@
-import React from "react"
 import {
-  BarChart,
   Bar,
-  Rectangle,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Cell,
 } from "recharts"
 
 const CustomBarChart = ({ data }) => {
-  // Fuction to alternate colors
   const getBarColor = (entry) => {
     switch (entry?.priority) {
       case "Low":
         return "#4CAF50"
-
       case "Medium":
         return "#FF9800"
-
       case "High":
         return "#F44336"
       default:
-        return "4CAF50"
+        return "#4CAF50"
     }
   }
 
@@ -51,36 +45,46 @@ const CustomBarChart = ({ data }) => {
   }
 
   return (
-    <div className="bg-white mt-6">
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid stroke="none" />
-
-          <XAxis
-            dataKey="priority"
-            tick={{ fill: "#555", fontSize: 12 }}
-            stroke="none"
-          />
-
-          <YAxis tick={{ fill: "#555", fontSize: 12 }} stroke="none" />
-
-          <Tooltip
-            content={<CustomToolTip />}
-            cursor={{ fill: "transparent" }}
-          />
-
-          <Bar
-            dataKey="count"
-            name={"priority"}
-            fill="#FF8042"
-            radius={[10, 10, 0, 0]}
+    <div className="bg-white mt-4 sm:mt-6 w-full">
+      <div className="h-[250px] sm:h-[300px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart 
+            data={data} 
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
           >
-            {data?.map((entry, index) => (
-              <Cell key={index} fill={getBarColor(entry)} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+            <CartesianGrid stroke="none" />
+
+            <XAxis
+              dataKey="priority"
+              tick={{ fill: "#64748b", fontSize: 11 }}
+              stroke="none"
+              interval={0}
+            />
+
+            <YAxis 
+              tick={{ fill: "#64748b", fontSize: 11 }} 
+              stroke="none" 
+            />
+
+            <Tooltip
+              content={<CustomToolTip />}
+              cursor={{ fill: "#f8fafc" }}
+            />
+
+            <Bar
+              dataKey="count"
+              name={"priority"}
+              fill="#FF8042"
+              radius={[6, 6, 0, 0]}
+              barSize={window.innerWidth < 640 ? 30 : 45}
+            >
+              {data?.map((entry, index) => (
+                <Cell key={index} fill={getBarColor(entry)} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { IoMdAdd } from "react-icons/io"
 import { MdDelete } from "react-icons/md"
 
@@ -18,22 +18,24 @@ const TodoListInput = ({ todoList, setTodoList }) => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       {todoList.map((item, index) => (
         <div
-          key={item}
-          className="flex items-center justify-between bg-gray-50 border-gray-100 px-3 py-2 rounded-md mb-3 mt-2"
+          key={`${item}-${index}`}
+          className="flex items-center justify-between bg-gray-50 border border-gray-100 px-3 py-2.5 rounded-lg mb-2 shadow-sm transition-all"
         >
-          <p className="text-sm text-black">
-            <span className="text-sm text-gray-400 font-semibold mr-2">
+          <div className="flex items-center min-w-0 flex-1 mr-3">
+            <span className="text-[11px] sm:text-xs text-gray-400 font-bold mr-3 flex-shrink-0">
               {index < 9 ? `0${index + 1}` : index + 1}
             </span>
-            {item}
-          </p>
+            <p className="text-sm text-gray-700 truncate">
+              {item}
+            </p>
+          </div>
 
           <button
             type="button"
-            className="cursor-pointer"
+            className="p-1.5 hover:bg-red-50 rounded-md transition-colors flex-shrink-0 cursor-pointer"
             onClick={() => handleDeleteOption(index)}
           >
             <MdDelete className="text-lg text-red-500" />
@@ -41,22 +43,25 @@ const TodoListInput = ({ todoList, setTodoList }) => {
         </div>
       ))}
 
-      <div className="flex items-center gap-5 mt-4">
-        <input
-          type="text"
-          placeholder="Add a new task"
-          value={option}
-          onChange={(e) => setOption(e.target.value)}
-          className="w-full text-[13px] text-black outline-none bg-white border border-gray-300 px-3 py-2 rounded-md"
-        />
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
+        <div className="relative flex-1">
+          <input
+            type="text"
+            placeholder="Add a new task"
+            value={option}
+            onChange={(e) => setOption(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddOption())}
+            className="w-full text-sm text-black outline-none bg-white border border-gray-200 px-4 py-2.5 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all placeholder:text-gray-400 shadow-sm"
+          />
+        </div>
 
         <button
           type="button"
-          className="flex items-center gap-2 px-5 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md text-sm font-medium"
+          className="flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-100 transition-all active:scale-95 cursor-pointer"
           onClick={handleAddOption}
         >
-          <IoMdAdd className="text-base" />
-          Add
+          <IoMdAdd className="text-lg" />
+          <span>Add</span>
         </button>
       </div>
     </div>

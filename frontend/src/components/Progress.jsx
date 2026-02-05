@@ -1,23 +1,22 @@
-import React from "react"
 
 const Progress = ({ progress, status }) => {
   const getColor = () => {
     switch (status) {
       case "In Progress":
-        return "text-cyan-500 bg-cyan-500 border border-cyan-500/10"
+        return "bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.4)]"
 
       case "Completed":
-        return "text-indigo-500 bg-indigo-500 border border-indigo-500/10"
+        return "bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]"
 
       default:
-        return "text-violet-500 bg-violet-500 border border-violet-500/10"
+        return "bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.4)]"
     }
   }
 
   return (
-    <div className="w-full h-1.5 bg-gray-200 rounded-full">
+    <div className="w-full h-1.5 sm:h-2 bg-gray-100 rounded-full overflow-hidden border border-gray-200/50">
       <div
-        className={`${getColor} h-1.5 rounded-full text-center text-sm font-medium`}
+        className={`${getColor()} h-full rounded-full transition-all duration-700 ease-out`}
         style={{ width: `${progress}%` }}
       ></div>
     </div>
