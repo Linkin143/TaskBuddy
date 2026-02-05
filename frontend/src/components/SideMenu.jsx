@@ -36,7 +36,7 @@ const SideMenu = ({ activeMenu }) => {
   useEffect(() => {
     if (currentUser) {
       setSideMenuData(
-        currentUser?.role === "admin" ? SIDE_MENU_DATA : USER_SIDE_MENU_DATA
+        currentUser?.role === "admin" ?  USER_SIDE_MENU_DATA : USER_SIDE_MENU_DATA
       )
     }
     return () => {}
