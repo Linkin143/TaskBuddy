@@ -1,6 +1,9 @@
-import mongoose from "mongoose"
-import Task from "../models/task.model.js"
-import { errorHandler } from "../utils/error.js"
+import dotenv from 'dotenv';
+import mongoose from "mongoose";
+import Task from "../models/task.model.js";
+import { errorHandler } from "../utils/error.js";
+
+dotenv.config();
 
 export const createTask = async (req, res, next) => {
   try {

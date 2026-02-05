@@ -1,8 +1,10 @@
 import bcryptjs from "bcryptjs";
+import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
+dotenv.config();
 
 export const signup = async (req, res, next) => {
 

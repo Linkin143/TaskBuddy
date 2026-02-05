@@ -1,5 +1,8 @@
-import jwt from "jsonwebtoken"
-import { errorHandler } from "./error.js"
+import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import { errorHandler } from "./error.js";
+
+dotenv.config();
 
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token

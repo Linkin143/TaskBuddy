@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
 import Task from "../models/task.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 
+dotenv.config();
 export const getUsers = async (req, res, next) => {
   try {
     const user = await User.findOne({

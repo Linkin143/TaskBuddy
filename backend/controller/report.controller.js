@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import excelJs from "exceljs";
 import Task from "../models/task.model.js";
 import User from "../models/user.model.js";
+
+dotenv.config();
 
 export const exportTaskReport = async (req, res, next) => {
   try {
